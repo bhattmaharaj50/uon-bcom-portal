@@ -33,6 +33,7 @@ export interface FeedbackItem {
   name: string;
   message: string;
   date: string;
+  isAdmin?: boolean;
 }
 
 const defaultAnnouncements: Announcement[] = [
