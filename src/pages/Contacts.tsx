@@ -3,7 +3,6 @@ import { Phone, Mail, MapPin } from "lucide-react";
 const contacts = [
   { role: "Class Representative", name: "Gerald Odhiambo", phone: "+254 713 009 074", email: "odhiambogerald006@gmail.com" },
   { role: "Assistant Class Rep", name: "Rachel Lesuyai", phone: "+254 781 315 872", email: "rachellesuyai@gmail.com" }
-
 export default function Contacts() {
   return (
     <div>
