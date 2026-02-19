@@ -44,18 +44,18 @@ export default function Index() {
         </div>
         <div className="space-y-3">
           {latestAnnouncements.map(a => (
-            <div key={a.id} className="bg-card rounded-lg p-4 card-shadow border-l-4 border-primary">
+            <Link key={a.id} to={`/announcements/${a.id}`} className="block bg-card rounded-lg p-4 card-shadow border-l-4 border-primary hover:card-hover-shadow transition-shadow">
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <h3 className="font-semibold text-card-foreground flex items-center gap-2">
                     {a.priority === "urgent" && <AlertTriangle className="w-4 h-4 text-destructive" />}
                     {a.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground mt-1">{a.content}</p>
+                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{a.content}</p>
                 </div>
                 <span className="text-xs text-muted-foreground whitespace-nowrap">{a.date}</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -70,16 +70,16 @@ export default function Index() {
         </div>
         <div className="space-y-3">
           {upcomingAssignments.map(a => (
-            <div key={a.id} className="bg-card rounded-lg p-4 card-shadow">
+            <Link key={a.id} to={`/assignments/${a.id}`} className="block bg-card rounded-lg p-4 card-shadow hover:card-hover-shadow transition-shadow">
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <span className="text-xs font-medium text-primary bg-secondary px-2 py-0.5 rounded">{a.course}</span>
                   <h3 className="font-semibold text-card-foreground mt-1">{a.title}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{a.description}</p>
+                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{a.description}</p>
                 </div>
                 <span className="text-xs text-muted-foreground whitespace-nowrap">Due: {a.dueDate}</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>

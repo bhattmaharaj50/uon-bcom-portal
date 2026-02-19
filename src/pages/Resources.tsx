@@ -1,5 +1,6 @@
 import { useData } from "@/contexts/DataContext";
-import { BookOpen, FileText } from "lucide-react";
+import { Link } from "react-router-dom";
+import { BookOpen, FileText, ChevronRight } from "lucide-react";
 
 const typeLabels: Record<string, string> = {
   notes: "Notes",
@@ -20,7 +21,7 @@ export default function Resources() {
       <div className="space-y-4">
         {resources.length === 0 && <p className="text-muted-foreground text-center py-8">No resources available yet.</p>}
         {resources.map(r => (
-          <div key={r.id} className="bg-card rounded-lg p-5 card-shadow">
+          <Link key={r.id} to={`/resources/${r.id}`} className="block bg-card rounded-lg p-5 card-shadow hover:card-hover-shadow transition-shadow">
             <div className="flex items-start justify-between gap-3 flex-wrap">
               <div>
                 <div className="flex items-center gap-2 mb-1">
@@ -28,15 +29,13 @@ export default function Resources() {
                   <span className="text-xs font-medium text-accent-foreground bg-accent px-2 py-0.5 rounded">{typeLabels[r.type]}</span>
                 </div>
                 <h3 className="font-semibold text-card-foreground">{r.title}</h3>
-                {r.fileName && (
-                  <a href={r.fileUrl} download={r.fileName} className="inline-flex items-center gap-1 mt-2 text-sm text-primary hover:underline">
-                    <FileText className="w-3 h-3" /> Download: {r.fileName}
-                  </a>
-                )}
               </div>
-              <span className="text-xs text-muted-foreground">{r.date}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">{r.date}</span>
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
