@@ -1,11 +1,11 @@
 import { Phone, Mail, MapPin } from "lucide-react";
 
 const contacts = [
-  { role: "Class Representative", name: "John Kamau", phone: "+254 712 345 678", email: "john.kamau@students.uonbi.ac.ke" },
-  { role: "Assistant Class Rep", name: "Mary Wanjiku", phone: "+254 723 456 789", email: "mary.wanjiku@students.uonbi.ac.ke" },
-  { role: "Department Secretary", name: "Mrs. Agnes Nyambura", phone: "+254 20 318 262 ext. 28", email: "business@uonbi.ac.ke" },
-  { role: "Academic Advisor", name: "Dr. Peter Ochieng", phone: "+254 20 318 262 ext. 45", email: "p.ochieng@uonbi.ac.ke" },
-];
+  { role: "Class Representative", name: "Gerald Odhiambo", phone: "+254 713 009 074", email: "odhiambogerald006@gmail.com" },
+  { role: "Assistant Class Rep", name: "Rachel Lesuyai", phone: "+254 781 315 872", email: "rachellesuyai@gmail.com" },
+  
+
+
 
 export default function Contacts() {
   return (
