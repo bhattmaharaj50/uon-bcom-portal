@@ -1,9 +1,10 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useData, type Announcement, type Assignment, type Resource } from "@/contexts/DataContext";
-import { Shield, Plus, Trash2, Megaphone, FileText, BookOpen, MessageSquare } from "lucide-react";
-import { useState } from "react";
+import { Shield, Plus, Trash2, Megaphone, FileText, BookOpen, MessageSquare, Upload, Loader2 } from "lucide-react";
+import { useState, useRef } from "react";
 import { Navigate } from "react-router-dom";
 import { toast } from "sonner";
+import { uploadFile } from "@/lib/supabase";
 
 type Tab = "announcements" | "assignments" | "resources" | "feedback";
 
@@ -95,12 +96,29 @@ function AssignmentsTab({ assignments, onAdd, onDelete }: { assignments: Assignm
   const [course, setCourse] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [description, setDescription] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
-  const handleAdd = (e: React.FormEvent) => {
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !course.trim()) return;
-    onAdd({ title: title.trim(), course: course.trim(), dueDate, description: description.trim() });
+    
+    let fileUrl: string | undefined;
+    let fileName: string | undefined;
+    const file = fileRef.current?.files?.[0];
+    
+    if (file) {
+      setUploading(true);
+      const result = await uploadFile(file, "assignments");
+      setUploading(false);
+      if (!result) { toast.error("File upload failed"); return; }
+      fileUrl = result.url;
+      fileName = result.fileName;
+    }
+    
+    onAdd({ title: title.trim(), course: course.trim(), dueDate, description: description.trim(), fileUrl, fileName });
     setTitle(""); setCourse(""); setDueDate(""); setDescription("");
+    if (fileRef.current) fileRef.current.value = "";
     toast.success("Assignment added!");
   };
 
@@ -112,7 +130,13 @@ function AssignmentsTab({ assignments, onAdd, onDelete }: { assignments: Assignm
         <input type="text" placeholder="Course (e.g. DBA 210)" value={course} onChange={e => setCourse(e.target.value)} className="w-full px-3 py-2 rounded-md border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring" required />
         <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className="w-full px-3 py-2 rounded-md border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
         <textarea placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} rows={3} className="w-full px-3 py-2 rounded-md border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none" />
-        <button type="submit" className="w-full py-2 rounded-md hero-gradient text-primary-foreground font-medium text-sm">Add Assignment</button>
+        <div className="flex items-center gap-2">
+          <Upload className="w-4 h-4 text-muted-foreground" />
+          <input ref={fileRef} type="file" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx" className="text-sm text-foreground file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-secondary file:text-secondary-foreground" />
+        </div>
+        <button type="submit" disabled={uploading} className="w-full py-2 rounded-md hero-gradient text-primary-foreground font-medium text-sm flex items-center justify-center gap-2">
+          {uploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading...</> : "Add Assignment"}
+        </button>
       </form>
       <div className="space-y-3">
         <h3 className="font-semibold text-foreground">Existing ({assignments.length})</h3>
@@ -122,6 +146,7 @@ function AssignmentsTab({ assignments, onAdd, onDelete }: { assignments: Assignm
               <span className="text-xs text-primary">{a.course}</span>
               <h4 className="text-sm font-medium text-card-foreground truncate">{a.title}</h4>
               <p className="text-xs text-muted-foreground">Due: {a.dueDate}</p>
+              {a.fileName && <p className="text-xs text-accent-foreground mt-1">📎 {a.fileName}</p>}
             </div>
             <button onClick={() => { onDelete(a.id); toast.success("Deleted"); }} className="p-1.5 rounded hover:bg-destructive/10 text-destructive"><Trash2 className="w-4 h-4" /></button>
           </div>
@@ -135,12 +160,29 @@ function ResourcesTab({ resources, onAdd, onDelete }: { resources: Resource[]; o
   const [title, setTitle] = useState("");
   const [course, setCourse] = useState("");
   const [type, setType] = useState<Resource["type"]>("notes");
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
-  const handleAdd = (e: React.FormEvent) => {
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !course.trim()) return;
-    onAdd({ title: title.trim(), course: course.trim(), type, date: new Date().toISOString().split("T")[0] });
+    
+    let fileUrl: string | undefined;
+    let fileName: string | undefined;
+    const file = fileRef.current?.files?.[0];
+    
+    if (file) {
+      setUploading(true);
+      const result = await uploadFile(file, "resources");
+      setUploading(false);
+      if (!result) { toast.error("File upload failed"); return; }
+      fileUrl = result.url;
+      fileName = result.fileName;
+    }
+    
+    onAdd({ title: title.trim(), course: course.trim(), type, date: new Date().toISOString().split("T")[0], fileUrl, fileName });
     setTitle(""); setCourse(""); setType("notes");
+    if (fileRef.current) fileRef.current.value = "";
     toast.success("Resource added!");
   };
 
@@ -156,7 +198,13 @@ function ResourcesTab({ resources, onAdd, onDelete }: { resources: Resource[]; o
           <option value="past-paper">Past Paper</option>
           <option value="other">Other</option>
         </select>
-        <button type="submit" className="w-full py-2 rounded-md hero-gradient text-primary-foreground font-medium text-sm">Add Resource</button>
+        <div className="flex items-center gap-2">
+          <Upload className="w-4 h-4 text-muted-foreground" />
+          <input ref={fileRef} type="file" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx" className="text-sm text-foreground file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-secondary file:text-secondary-foreground" />
+        </div>
+        <button type="submit" disabled={uploading} className="w-full py-2 rounded-md hero-gradient text-primary-foreground font-medium text-sm flex items-center justify-center gap-2">
+          {uploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading...</> : "Add Resource"}
+        </button>
       </form>
       <div className="space-y-3">
         <h3 className="font-semibold text-foreground">Existing ({resources.length})</h3>
@@ -165,6 +213,7 @@ function ResourcesTab({ resources, onAdd, onDelete }: { resources: Resource[]; o
             <div className="min-w-0">
               <span className="text-xs text-primary">{r.course}</span>
               <h4 className="text-sm font-medium text-card-foreground truncate">{r.title}</h4>
+              {r.fileName && <p className="text-xs text-accent-foreground mt-1">📎 {r.fileName}</p>}
             </div>
             <button onClick={() => { onDelete(r.id); toast.success("Deleted"); }} className="p-1.5 rounded hover:bg-destructive/10 text-destructive"><Trash2 className="w-4 h-4" /></button>
           </div>
