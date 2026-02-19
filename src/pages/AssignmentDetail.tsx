@@ -1,6 +1,6 @@
 import { useData } from "@/contexts/DataContext";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, FileText, Calendar, BookOpen } from "lucide-react";
+import { ArrowLeft, FileText, Calendar, BookOpen, Download } from "lucide-react";
 
 export default function AssignmentDetail() {
   const { id } = useParams<{ id: string }>();
@@ -33,9 +33,9 @@ export default function AssignmentDetail() {
         </div>
         <hr className="my-4 border-border" />
         <p className="text-foreground leading-relaxed whitespace-pre-wrap">{item.description}</p>
-        {item.fileName && (
-          <a href={item.fileUrl} download={item.fileName} className="inline-flex items-center gap-2 mt-6 px-4 py-2 rounded-md bg-secondary text-primary text-sm font-medium hover:bg-accent transition-colors">
-            <FileText className="w-4 h-4" /> Download: {item.fileName}
+        {item.fileName && item.fileUrl && (
+          <a href={item.fileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 rounded-md hero-gradient text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">
+            <Download className="w-4 h-4" /> Download {item.fileName}
           </a>
         )}
       </div>

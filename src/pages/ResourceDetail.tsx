@@ -1,6 +1,6 @@
 import { useData } from "@/contexts/DataContext";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, FileText, Calendar, BookOpen } from "lucide-react";
+import { ArrowLeft, FileText, Calendar, BookOpen, Download } from "lucide-react";
 
 const typeLabels: Record<string, string> = {
   notes: "Notes",
@@ -40,9 +40,9 @@ export default function ResourceDetail() {
           <Calendar className="w-3 h-3" /> {item.date}
         </div>
         <hr className="my-4 border-border" />
-        {item.fileName ? (
-          <a href={item.fileUrl} download={item.fileName} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-secondary text-primary text-sm font-medium hover:bg-accent transition-colors">
-            <FileText className="w-4 h-4" /> Download: {item.fileName}
+        {item.fileName && item.fileUrl ? (
+          <a href={item.fileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md hero-gradient text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">
+            <Download className="w-4 h-4" /> Download {item.fileName}
           </a>
         ) : (
           <p className="text-muted-foreground text-sm">No file attached to this resource.</p>
