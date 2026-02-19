@@ -1,11 +1,11 @@
 import { Calendar } from "lucide-react";
 
 const timetable = [
-  { day: "Monday", slots: [{ time: "8:00 - 10:00", course: "DBA 210", unit: "Financial Accounting", venue: "LT 1" }, { time: "10:00 - 12:00", course: "DBA 202", unit: "Business Statistics", venue: "LT 3" }, { time: "2:00 - 4:00", course: "DBA 206", unit: "Principles of Marketing", venue: "SR 2" }] },
-  { day: "Tuesday", slots: [{ time: "8:00 - 10:00", course: "DBA 204", unit: "Business Law", venue: "LT 2" }, { time: "10:00 - 12:00", course: "DBA 208", unit: "Organizational Behaviour", venue: "LT 1" }] },
-  { day: "Wednesday", slots: [{ time: "8:00 - 10:00", course: "DBA 210", unit: "Financial Accounting", venue: "LT 1" }, { time: "2:00 - 4:00", course: "DBA 212", unit: "Entrepreneurship", venue: "SR 1" }] },
-  { day: "Thursday", slots: [{ time: "8:00 - 10:00", course: "DBA 202", unit: "Business Statistics", venue: "LT 3" }, { time: "10:00 - 12:00", course: "DBA 206", unit: "Principles of Marketing", venue: "SR 2" }, { time: "2:00 - 4:00", course: "DBA 204", unit: "Business Law", venue: "LT 2" }] },
-  { day: "Friday", slots: [{ time: "8:00 - 10:00", course: "DBA 208", unit: "Organizational Behaviour", venue: "LT 1" }, { time: "10:00 - 12:00", course: "DBA 212", unit: "Entrepreneurship", venue: "SR 1" }] },
+  { day: "Monday", slots: [{ time: "14:00 - 17.00", course: "DMP3202", unit: "Fundamentals of Supply Chain Management", venue: "Biashara Hall" }] },
+  { day: "Tuesday", slots: [{ time: "11:00 - 14:00", course: "DBH3202", unit: "Management of Human Resources", venue: "NLT " }, { time: "14:00 - 17:00", course: "DBM3204", unit: "Principles of Marketing", venue: "NLT" }] },
+  { day: "Wednesday", slots: [{ time: "8:00 - 11:00", course: "DFA3212", unit: "Principles of Taxation", venue: "NTB3" }] },
+  { day: "Thursday", slots: [{ time: "11:00 - 14:00", course: "DFF3224", unit: "Financial Institutions and Markets", venue: "Biashara Hall" }] },
+  { day: "Friday", slots: [{ time: "8:00 - 11:00", course: "DFA3204", unit: "Principles of Internal Controls and Corporate Governance", venue: "Biashara Hall" }] },
 ];
 
 export default function Timetable() {
