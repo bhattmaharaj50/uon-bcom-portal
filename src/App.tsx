@@ -15,6 +15,9 @@ import Contacts from "./pages/Contacts";
 import Feedback from "./pages/Feedback";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import AnnouncementDetail from "./pages/AnnouncementDetail";
+import AssignmentDetail from "./pages/AssignmentDetail";
+import ResourceDetail from "./pages/ResourceDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,8 +34,11 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/announcements" element={<Announcements />} />
+                <Route path="/announcements/:id" element={<AnnouncementDetail />} />
                 <Route path="/assignments" element={<Assignments />} />
+                <Route path="/assignments/:id" element={<AssignmentDetail />} />
                 <Route path="/resources" element={<Resources />} />
+                <Route path="/resources/:id" element={<ResourceDetail />} />
                 <Route path="/timetable" element={<Timetable />} />
                 <Route path="/contacts" element={<Contacts />} />
                 <Route path="/feedback" element={<Feedback />} />
