@@ -30,14 +30,14 @@ export default function Feedback() {
     setHasSetName(true);
   };
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
-    addFeedback({
+    await addFeedback({
       name: displayName,
       message: message.trim(),
       date: new Date().toISOString(),
-      isAdmin,
+      isAdmin: isAdmin ? "true" : "false",
     });
     setMessage("");
   };
@@ -124,7 +124,7 @@ export default function Feedback() {
               </div>
               {msgs.map(f => {
                 const isMe = f.name === displayName;
-                const isRep = f.isAdmin;
+                const isRep = f.isAdmin === "true";
                 return (
                   <div key={f.id} className={`flex gap-2 mb-2 ${isMe ? "flex-row-reverse" : ""}`}>
                     {!isMe && (
