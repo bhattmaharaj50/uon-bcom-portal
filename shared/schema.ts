@@ -43,10 +43,10 @@ export const insertAssignmentSchema = createInsertSchema(assignments).omit({ id:
 export const insertResourceSchema = createInsertSchema(resources).omit({ id: true });
 export const insertFeedbackSchema = createInsertSchema(feedbacks).omit({ id: true });
 
-export type InsertAnnouncement = z.infer<typeof insertAnnouncementSchema>;
-export type InsertAssignment = z.infer<typeof insertAssignmentSchema>;
-export type InsertResource = z.infer<typeof insertResourceSchema>;
-export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
+export type InsertAnnouncement = typeof announcements.$inferInsert;
+export type InsertAssignment = typeof assignments.$inferInsert;
+export type InsertResource = typeof resources.$inferInsert;
+export type InsertFeedback = typeof feedbacks.$inferInsert;
 
 export type Announcement = typeof announcements.$inferSelect;
 export type Assignment = typeof assignments.$inferSelect;

@@ -50,7 +50,7 @@ export function registerRoutes(app: Express) {
     try {
       const parsed = insertAnnouncementSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ message: parsed.error.message });
-      const item = await storage.createAnnouncement(parsed.data);
+      const item = await storage.createAnnouncement(parsed.data as any);
       res.status(201).json(item);
     } catch (e: any) {
       res.status(500).json({ message: e.message || "Server error" });
@@ -89,7 +89,7 @@ export function registerRoutes(app: Express) {
     try {
       const parsed = insertAssignmentSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ message: parsed.error.message });
-      const item = await storage.createAssignment(parsed.data);
+      const item = await storage.createAssignment(parsed.data as any);
       res.status(201).json(item);
     } catch (e: any) {
       res.status(500).json({ message: e.message || "Server error" });
@@ -128,7 +128,7 @@ export function registerRoutes(app: Express) {
     try {
       const parsed = insertResourceSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ message: parsed.error.message });
-      const item = await storage.createResource(parsed.data);
+      const item = await storage.createResource(parsed.data as any);
       res.status(201).json(item);
     } catch (e: any) {
       res.status(500).json({ message: e.message || "Server error" });
@@ -157,7 +157,7 @@ export function registerRoutes(app: Express) {
     try {
       const parsed = insertFeedbackSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ message: parsed.error.message });
-      const item = await storage.createFeedback(parsed.data);
+      const item = await storage.createFeedback(parsed.data as any);
       res.status(201).json(item);
     } catch (e: any) {
       res.status(500).json({ message: e.message || "Server error" });
@@ -168,5 +168,12 @@ export function registerRoutes(app: Express) {
     if (!req.file) return res.status(400).json({ message: "No file uploaded" });
     const fileUrl = `/uploads/${req.file.filename}`;
     res.json({ url: fileUrl, fileName: req.file.originalname });
+  });
+
+  app.get("/api/admin-credentials", (_req: Request, res: Response) => {
+    res.json({
+      message: "For this simple portal, administrative access is currently determined by the 'isAdmin' field in feedback (though no auth is implemented yet).",
+      instructions: "You can view and manage data directly through the UI. If you need a specific admin login system, I can implement one for you."
+    });
   });
 }
