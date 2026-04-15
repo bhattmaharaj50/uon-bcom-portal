@@ -1,6 +1,5 @@
-import { createContext, useContext, ReactNode } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { createContext, useContext, ReactNode, useState, useEffect, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface Announcement {
   id: number;
@@ -62,79 +61,60 @@ export const useData = () => {
 };
 
 export const DataProvider = ({ children }: { children: ReactNode }) => {
-  const announcementsQuery = useQuery<Announcement[]>({ queryKey: ["/api/announcements"] });
-  const assignmentsQuery = useQuery<Assignment[]>({ queryKey: ["/api/assignments"] });
-  const resourcesQuery = useQuery<Resource[]>({ queryKey: ["/api/resources"] });
-  const feedbacksQuery = useQuery<FeedbackItem[]>({ queryKey: ["/api/feedbacks"] });
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const addAnnouncementMut = useMutation({
-    mutationFn: async (data: Omit<Announcement, "id">) => {
-      await apiRequest("POST", "/api/announcements", data);
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/announcements"] }),
-  });
+  const fetchAll = useCallback(async () => {
+    setIsLoading(true);
+    const [aRes, asRes, rRes, fRes] = await Promise.all([
+      supabase.from("announcements").select("*").order("id", { ascending: false }),
+      supabase.from("assignments").select("*").order("id", { ascending: false }),
+      supabase.from("resources").select("*").order("id", { ascending: false }),
+      supabase.from("feedbacks").select("*").order("id", { ascending: false }),
+    ]);
+    setAnnouncements((aRes.data || []).map((r: any) => ({ id: r.id, title: r.title, content: r.content, date: r.date, priority: r.priority })));
+    setAssignments((asRes.data || []).map((r: any) => ({ id: r.id, title: r.title, course: r.course, dueDate: r.due_date, description: r.description, fileUrl: r.file_url, fileName: r.file_name })));
+    setResources((rRes.data || []).map((r: any) => ({ id: r.id, title: r.title, course: r.course, type: r.type, fileUrl: r.file_url, fileName: r.file_name, date: r.date })));
+    setFeedbacks((fRes.data || []).map((r: any) => ({ id: r.id, name: r.name, message: r.message, date: r.date, isAdmin: r.is_admin })));
+    setIsLoading(false);
+  }, []);
 
-  const deleteAnnouncementMut = useMutation({
-    mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `/api/announcements/${id}`);
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/announcements"] }),
-  });
+  useEffect(() => { fetchAll(); }, [fetchAll]);
 
-  const addAssignmentMut = useMutation({
-    mutationFn: async (data: Omit<Assignment, "id">) => {
-      await apiRequest("POST", "/api/assignments", data);
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/assignments"] }),
-  });
-
-  const deleteAssignmentMut = useMutation({
-    mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `/api/assignments/${id}`);
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/assignments"] }),
-  });
-
-  const addResourceMut = useMutation({
-    mutationFn: async (data: Omit<Resource, "id">) => {
-      await apiRequest("POST", "/api/resources", data);
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/resources"] }),
-  });
-
-  const deleteResourceMut = useMutation({
-    mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `/api/resources/${id}`);
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/resources"] }),
-  });
-
-  const addFeedbackMut = useMutation({
-    mutationFn: async (data: Omit<FeedbackItem, "id">) => {
-      await apiRequest("POST", "/api/feedbacks", data);
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/feedbacks"] }),
-  });
-
-  const isLoading = announcementsQuery.isLoading || assignmentsQuery.isLoading || resourcesQuery.isLoading || feedbacksQuery.isLoading;
-
-  const value: DataContextType = {
-    announcements: announcementsQuery.data || [],
-    assignments: assignmentsQuery.data || [],
-    resources: resourcesQuery.data || [],
-    feedbacks: feedbacksQuery.data || [],
-    isLoading,
-    addAnnouncement: async (a) => { await addAnnouncementMut.mutateAsync(a); },
-    deleteAnnouncement: async (id) => { await deleteAnnouncementMut.mutateAsync(id); },
-    addAssignment: async (a) => { await addAssignmentMut.mutateAsync(a); },
-    deleteAssignment: async (id) => { await deleteAssignmentMut.mutateAsync(id); },
-    addResource: async (r) => { await addResourceMut.mutateAsync(r); },
-    deleteResource: async (id) => { await deleteResourceMut.mutateAsync(id); },
-    addFeedback: async (f) => { await addFeedbackMut.mutateAsync(f); },
+  const addAnnouncement = async (a: Omit<Announcement, "id">) => {
+    await supabase.from("announcements").insert({ title: a.title, content: a.content, date: a.date, priority: a.priority });
+    fetchAll();
+  };
+  const deleteAnnouncement = async (id: number) => {
+    await supabase.from("announcements").delete().eq("id", id);
+    fetchAll();
+  };
+  const addAssignment = async (a: Omit<Assignment, "id">) => {
+    await supabase.from("assignments").insert({ title: a.title, course: a.course, due_date: a.dueDate, description: a.description, file_url: a.fileUrl, file_name: a.fileName });
+    fetchAll();
+  };
+  const deleteAssignment = async (id: number) => {
+    await supabase.from("assignments").delete().eq("id", id);
+    fetchAll();
+  };
+  const addResource = async (r: Omit<Resource, "id">) => {
+    await supabase.from("resources").insert({ title: r.title, course: r.course, type: r.type, date: r.date, file_url: r.fileUrl, file_name: r.fileName });
+    fetchAll();
+  };
+  const deleteResource = async (id: number) => {
+    await supabase.from("resources").delete().eq("id", id);
+    fetchAll();
+  };
+  const addFeedback = async (f: Omit<FeedbackItem, "id">) => {
+    await supabase.from("feedbacks").insert({ name: f.name, message: f.message, date: f.date, is_admin: f.isAdmin });
+    fetchAll();
   };
 
   return (
-    <DataContext.Provider value={value}>
+    <DataContext.Provider value={{ announcements, assignments, resources, feedbacks, isLoading, addAnnouncement, deleteAnnouncement, addAssignment, deleteAssignment, addResource, deleteResource, addFeedback }}>
       {children}
     </DataContext.Provider>
   );
