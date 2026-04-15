@@ -5,7 +5,7 @@ import { ArrowLeft, AlertTriangle, Megaphone, Calendar } from "lucide-react";
 export default function AnnouncementDetail() {
   const { id } = useParams<{ id: string }>();
   const { announcements } = useData();
-  const item = announcements.find(a => a.id === id);
+  const item = announcements.find(a => String(a.id) === id);
 
   if (!item) {
     return (

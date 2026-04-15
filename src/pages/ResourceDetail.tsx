@@ -12,7 +12,7 @@ const typeLabels: Record<string, string> = {
 export default function ResourceDetail() {
   const { id } = useParams<{ id: string }>();
   const { resources } = useData();
-  const item = resources.find(r => r.id === id);
+  const item = resources.find(r => String(r.id) === id);
 
   if (!item) {
     return (

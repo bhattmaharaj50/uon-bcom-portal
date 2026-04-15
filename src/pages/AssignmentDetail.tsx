@@ -5,7 +5,7 @@ import { ArrowLeft, FileText, Calendar, BookOpen, Download } from "lucide-react"
 export default function AssignmentDetail() {
   const { id } = useParams<{ id: string }>();
   const { assignments } = useData();
-  const item = assignments.find(a => a.id === id);
+  const item = assignments.find(a => String(a.id) === id);
 
   if (!item) {
     return (
