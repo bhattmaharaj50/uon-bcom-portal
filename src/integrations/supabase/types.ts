@@ -14,7 +14,114 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      announcements: {
+        Row: {
+          content: string
+          date: string
+          id: number
+          priority: string
+          title: string
+        }
+        Insert: {
+          content: string
+          date: string
+          id?: number
+          priority?: string
+          title: string
+        }
+        Update: {
+          content?: string
+          date?: string
+          id?: number
+          priority?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      assignments: {
+        Row: {
+          course: string
+          description: string
+          due_date: string
+          file_name: string | null
+          file_url: string | null
+          id: number
+          title: string
+        }
+        Insert: {
+          course: string
+          description: string
+          due_date: string
+          file_name?: string | null
+          file_url?: string | null
+          id?: number
+          title: string
+        }
+        Update: {
+          course?: string
+          description?: string
+          due_date?: string
+          file_name?: string | null
+          file_url?: string | null
+          id?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      feedbacks: {
+        Row: {
+          date: string
+          id: number
+          is_admin: string | null
+          message: string
+          name: string
+        }
+        Insert: {
+          date: string
+          id?: number
+          is_admin?: string | null
+          message: string
+          name: string
+        }
+        Update: {
+          date?: string
+          id?: number
+          is_admin?: string | null
+          message?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      resources: {
+        Row: {
+          course: string
+          date: string
+          file_name: string | null
+          file_url: string | null
+          id: number
+          title: string
+          type: string
+        }
+        Insert: {
+          course: string
+          date: string
+          file_name?: string | null
+          file_url?: string | null
+          id?: number
+          title: string
+          type?: string
+        }
+        Update: {
+          course?: string
+          date?: string
+          file_name?: string | null
+          file_url?: string | null
+          id?: number
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
